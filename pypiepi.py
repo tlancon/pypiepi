@@ -1,6 +1,39 @@
 import numpy as np
 from skimage.segmentation import join_segmentations
 
+test_image = np.array([[0, 0, 0, 0, 0, 0],
+                       [0, 0, 0, 0, 0, 0],
+                       [0, 0, 4, 2, 0, 0],
+                       [0, 2, 6, 5, 6, 0],
+                       [0, 0, 3, 2, 0, 0]])
+
+
+def auto_crop(mask):
+    """
+    Removes columns and rows of zeros inward from the bounding box until values are reached. For a binary image, this
+    results in the smallest possible bounding box containing the labeled pixels.
+
+    Attributes
+    ----------
+    mask : (N, M) array
+        2D array of mask of pie.
+
+    Returns
+    -------
+    (N, M) array
+        Cropped image
+    """
+
+    xbounds = np.where(mask.any(axis=1))[0]
+    xmin = np.min(xbounds)
+    xmax = np.max(xbounds)
+
+    ybounds = np.where(mask.any(axis=0))[0]
+    ymin = np.min(ybounds)
+    ymax = np.max(ybounds)
+
+    return mask[xmin:xmax+1, ymin:ymax+1]
+
 
 def simulate_pi(mask):
     """
@@ -14,7 +47,7 @@ def simulate_pi(mask):
     Returns
     -------
     float
-        calculated value of pi
+        Calculated value of pi
     """
 
     x_len, y_len = mask.shape
@@ -30,6 +63,6 @@ def simulate_pi(mask):
 
     return calculated_pi
 
-# TODO def auto_crop(mask):
 # TODO Return image showing hits/non-hits
 # TODO Create companion function to segment pie
+# TODO Force 2D, 8bit, single channel arrays for masks, or define logic to handle them
