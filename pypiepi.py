@@ -34,6 +34,9 @@ def auto_crop(mask):
 
     return mask[xmin:xmax+1, ymin:ymax+1]
 
+    # TODO Add optional "square" parameter - if true, force a square aspect ratio
+    # TODO Make compatible with 3D arrays and submit to scikit-image
+
 
 def simulate_pi(mask):
     """
