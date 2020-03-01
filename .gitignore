@@ -1,9 +1,5 @@
 # From: https://github.com/github/gitignore/blob/master/Python.gitignore
 
-# Example and generated data
-data/coin.jpg
-data/pie.jpg
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
