@@ -115,7 +115,7 @@ def auto_crop(mask):
 
 def simulate_pi(mask, export_image=False):
     """
-    Calculates pie-ness by simulating pi on a 2D mask.
+    Calculates circularity of an object by simulating pi on its mask. Ideal circles will return values close to 3.14etc.
 
     Attributes
     ----------
