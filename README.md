@@ -9,7 +9,6 @@ A library for everything you need to simulate pi on pictures of pies in Python.
 ## TODO
 - Make tutorials using open domain images
 - Handle cases where wedge is cut from pie (oh lawd)
-- Explore possibility to segment using morphological closing/filling of the Canny image
 - Add algorithm to simulate pi using small packets of "darts" until convergence
 
 ## Attributions
