@@ -61,8 +61,12 @@ def hough_seeded_watershed(image, radius, radius_width, edge_size=3):
     input_image = _img_as_ubyte(_rgb2gray(_imread(image)))
     mask = _np.zeros(shape=input_image.shape, dtype=_np.uint8)
     radii = _np.arange(radius - radius_width, radius + radius_width, 5)
+    seed_disk = _disk(2*radius_width)
+    gradient_disk = _disk(edge_size)
+
     # high_threshold hard-coded to 100 since ubyte type is enforced:
     edge_image = _canny(input_image, sigma=edge_size, high_threshold=100)
+
     hough_result = _hough_circle(edge_image, radii)
     peak, cx, cy, r = _hough_circle_peaks(hough_result, radii, num_peaks=1, total_num_peaks=1, normalize=True)
     # cx, cy, and r are returned as arrays, but circle_perimeter requires ints:
@@ -70,13 +74,16 @@ def hough_seeded_watershed(image, radius, radius_width, edge_size=3):
     rr, cc = _circle_perimeter(cy, cx, r, shape=input_image.shape)
     mask[rr, cc] = 1
     mask = _binary_fill_holes(mask)
-    inside_seed = _binary_erosion(mask, _disk(2*radius_width))
-    outside_seed = ~_binary_dilation(mask, _disk(2*radius_width))
+
+    inside_seed = _binary_erosion(mask, seed_disk)
+    outside_seed = ~_binary_dilation(mask, seed_disk)
     seeds = (inside_seed + 2*outside_seed).astype(_np.uint8)
     # separate seeds are no longer needed and are best removed here to save memory in case of a large image
     del inside_seed, outside_seed
-    gradient_image = _gradient(_median(input_image, _disk(edge_size)), _disk(edge_size))
+
+    gradient_image = _gradient(_median(input_image, gradient_disk), gradient_disk)
     segmentation = _np.where(_watershed(gradient_image, seeds) == 1, 1, 0).astype(_np.uint8)
+
     return segmentation
 
     # TODO Test using gradient image instead of Canny to save a computation
