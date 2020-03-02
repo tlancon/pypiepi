@@ -154,3 +154,4 @@ def simulate_pi(mask, export_image=False):
 # TODO Make tutorials using open domain images
 # TODO Handle cases where wedge is cut from pie (oh lawd)
 # TODO Add algorithm to simulate pi using small packets of "darts" until convergence
+# TODO Make function just_look_at_it() to show the pie with a scale bar
