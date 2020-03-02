@@ -1,14 +1,19 @@
-import numpy as np
-from scipy.ndimage import binary_fill_holes
-from skimage.io import imread
-from skimage.color import rgb2gray
-from skimage.util import img_as_ubyte
-from skimage.draw import circle_perimeter
-from skimage.feature import canny
-from skimage.transform import hough_circle, hough_circle_peaks
-from skimage.morphology import disk, binary_erosion, binary_dilation, watershed
-from skimage.filters.rank import median, gradient
-from skimage.segmentation import join_segmentations
+import numpy as _np
+from scipy.ndimage import binary_fill_holes as _binary_fill_holes
+from skimage.util import img_as_ubyte as _img_as_ubyte
+from skimage.color import rgb2gray as _rgb2gray
+from skimage.io import imread as _imread
+from skimage.feature import canny as _canny
+from skimage.transform import hough_circle as _hough_circle
+from skimage.transform import hough_circle_peaks as _hough_circle_peaks
+from skimage.draw import circle_perimeter as _circle_perimeter
+from skimage.morphology import binary_erosion as _binary_erosion
+from skimage.morphology import disk as _disk
+from skimage.morphology import binary_dilation as _binary_dilation
+from skimage.morphology import watershed as _watershed
+from skimage.filters.rank import median as _median
+from skimage.filters.rank import gradient as _gradient
+from skimage.segmentation import join_segmentations as _join_segmentations
 
 
 def hough_seeded_watershed(image, radius, radius_width, edge_size=3):
@@ -53,28 +58,29 @@ def hough_seeded_watershed(image, radius, radius_width, edge_size=3):
         Binary segmentation of the circular object.
     """
 
-    input_image = img_as_ubyte(rgb2gray(imread(image)))
-    mask = np.zeros(shape=input_image.shape, dtype=np.uint8)
-    radii = np.arange(radius - radius_width, radius + radius_width, 5)
+    input_image = _img_as_ubyte(_rgb2gray(_imread(image)))
+    mask = _np.zeros(shape=input_image.shape, dtype=_np.uint8)
+    radii = _np.arange(radius - radius_width, radius + radius_width, 5)
     # high_threshold hard-coded to 100 since ubyte type is enforced:
-    edge_image = canny(input_image, sigma=edge_size, high_threshold=100)
-    hough_result = hough_circle(edge_image, radii)
-    peak, cx, cy, r = hough_circle_peaks(hough_result, radii, num_peaks=1, total_num_peaks=1, normalize=True)
+    edge_image = _canny(input_image, sigma=edge_size, high_threshold=100)
+    hough_result = _hough_circle(edge_image, radii)
+    peak, cx, cy, r = _hough_circle_peaks(hough_result, radii, num_peaks=1, total_num_peaks=1, normalize=True)
     # cx, cy, and r are returned as arrays, but circle_perimeter requires ints:
     cy, cx, r = map(int, [cy, cx, r])
-    rr, cc = circle_perimeter(cy, cx, r, shape=input_image.shape)
+    rr, cc = _circle_perimeter(cy, cx, r, shape=input_image.shape)
     mask[rr, cc] = 1
-    mask = binary_fill_holes(mask)
-    inside_seed = binary_erosion(mask, disk(2*radius_width))
-    outside_seed = ~binary_dilation(mask, disk(2*radius_width))
-    seeds = (inside_seed + 2*outside_seed).astype(np.uint8)
+    mask = _binary_fill_holes(mask)
+    inside_seed = _binary_erosion(mask, _disk(2*radius_width))
+    outside_seed = ~_binary_dilation(mask, _disk(2*radius_width))
+    seeds = (inside_seed + 2*outside_seed).astype(_np.uint8)
     # separate seeds are no longer needed and are best removed here to save memory in case of a large image
     del inside_seed, outside_seed
-    gradient_image = gradient(median(input_image, disk(edge_size)), disk(edge_size))
-    segmentation = np.where(watershed(gradient_image, seeds) == 1, 1, 0).astype(np.uint8)
+    gradient_image = _gradient(_median(input_image, _disk(edge_size)), _disk(edge_size))
+    segmentation = _np.where(_watershed(gradient_image, seeds) == 1, 1, 0).astype(_np.uint8)
     return segmentation
 
     # TODO Test using gradient image instead of Canny to save a computation
+    # TODO Test excluding median when computing gradient
     # TODO Attempt to parallelize hough_circle
 
 
@@ -94,13 +100,13 @@ def auto_crop(mask):
         Cropped image
     """
 
-    xbounds = np.where(mask.any(axis=1))[0]
-    xmin = np.min(xbounds)
-    xmax = np.max(xbounds)
+    xbounds = _np.where(mask.any(axis=1))[0]
+    xmin = _np.min(xbounds)
+    xmax = _np.max(xbounds)
 
-    ybounds = np.where(mask.any(axis=0))[0]
-    ymin = np.min(ybounds)
-    ymax = np.max(ybounds)
+    ybounds = _np.where(mask.any(axis=0))[0]
+    ymin = _np.min(ybounds)
+    ymax = _np.max(ybounds)
 
     return mask[xmin:xmax+1, ymin:ymax+1]
 
@@ -124,13 +130,13 @@ def simulate_pi(mask, export_image=False):
 
     x_len, y_len = mask.shape
 
-    rand_array = np.zeros(shape=(x_len, y_len),dtype=np.uint8)
-    rand_array[:, :] = (np.random.randint(low=0, high=255, size=(x_len, y_len)) >= 128).astype(np.uint8)
+    rand_array = _np.zeros(shape=(x_len, y_len), dtype=_np.uint8)
+    rand_array[:, :] = (_np.random.randint(low=0, high=255, size=(x_len, y_len)) >= 128).astype(_np.uint8)
 
-    result = join_segmentations(rand_array, mask)
+    result = _join_segmentations(rand_array, mask)
 
-    points_inside_pie = np.count_nonzero((result == 3).astype(np.uint8))
-    total_points = np.count_nonzero(rand_array.astype(np.uint8))
+    points_inside_pie = _np.count_nonzero((result == 3).astype(_np.uint8))
+    total_points = _np.count_nonzero(rand_array.astype(_np.uint8))
     calculated_pi = (float(points_inside_pie) / total_points) * 4
 
     return calculated_pi
