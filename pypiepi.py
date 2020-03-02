@@ -150,3 +150,7 @@ def simulate_pi(mask, export_image=False):
     return calculated_pi
 
     # TODO Optionally return image showing hits/non-hits
+
+# TODO Make tutorials using open domain images
+# TODO Handle cases where wedge is cut from pie (oh lawd)
+# TODO Add algorithm to simulate pi using small packets of "darts" until convergence
