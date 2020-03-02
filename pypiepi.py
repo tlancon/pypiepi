@@ -10,12 +10,6 @@ from skimage.morphology import disk, binary_erosion, binary_dilation, watershed
 from skimage.filters.rank import median, gradient
 from skimage.segmentation import join_segmentations
 
-test_image = np.array([[0, 0, 0, 0, 0, 0],
-                       [0, 0, 0, 0, 0, 0],
-                       [0, 0, 4, 2, 0, 0],
-                       [0, 2, 6, 5, 6, 0],
-                       [0, 0, 3, 2, 0, 0]])
-
 
 def hough_seeded_watershed(image, radius, radius_width, edge_size=3):
     """
@@ -142,8 +136,3 @@ def simulate_pi(mask, export_image=False):
     return calculated_pi
 
     # TODO Optionally return image showing hits/non-hits
-
-# TODO Handle cases where wedge is cut from pie
-# TODO Make tests
-# TODO Explore possibility to segment using morphological closing/filling of the Canny image
-# TODO Add algorithm to simulate pi using small packets of "darts" until convergence
