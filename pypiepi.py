@@ -7,9 +7,7 @@ from skimage.feature import canny as _canny
 from skimage.transform import hough_circle as _hough_circle
 from skimage.transform import hough_circle_peaks as _hough_circle_peaks
 from skimage.draw import circle_perimeter as _circle_perimeter
-from skimage.morphology import binary_erosion as _binary_erosion
 from skimage.morphology import disk as _disk
-from skimage.morphology import binary_dilation as _binary_dilation
 from skimage.morphology import watershed as _watershed
 from skimage.filters.rank import median as _median
 from skimage.filters.rank import gradient as _gradient
@@ -59,9 +57,9 @@ def hough_seeded_watershed(image, radius, radius_width, edge_size=3):
     """
 
     input_image = _img_as_ubyte(_rgb2gray(_imread(image)))
-    mask = _np.zeros(shape=input_image.shape, dtype=_np.uint8)
+    inside_seed = _np.zeros(shape=input_image.shape, dtype=_np.uint8)
+    outside_seed = _np.zeros(shape=input_image.shape, dtype=_np.uint8)
     radii = _np.arange(radius - radius_width, radius + radius_width, 5)
-    seed_disk = _disk(2*radius_width)
     gradient_disk = _disk(edge_size)
 
     # high_threshold hard-coded to 100 since ubyte type is enforced:
@@ -71,12 +69,15 @@ def hough_seeded_watershed(image, radius, radius_width, edge_size=3):
     peak, cx, cy, r = _hough_circle_peaks(hough_result, radii, num_peaks=1, total_num_peaks=1, normalize=True)
     # cx, cy, and r are returned as arrays, but circle_perimeter requires ints:
     cy, cx, r = map(int, [cy, cx, r])
-    rr, cc = _circle_perimeter(cy, cx, r, shape=input_image.shape)
-    mask[rr, cc] = 1
-    mask = _binary_fill_holes(mask)
 
-    inside_seed = _binary_erosion(mask, seed_disk)
-    outside_seed = ~_binary_dilation(mask, seed_disk)
+    rr, cc = _circle_perimeter(cy, cx, r-int(radius_width/2), shape=input_image.shape)
+    inside_seed[rr, cc] = 1
+    inside_seed = _binary_fill_holes(inside_seed)
+
+    rr, cc = _circle_perimeter(cy, cx, r + int(radius_width / 2), shape=input_image.shape)
+    outside_seed[rr, cc] = 1
+    outside_seed = ~_binary_fill_holes(outside_seed)
+
     seeds = (inside_seed + 2*outside_seed).astype(_np.uint8)
     # separate seeds are no longer needed and are best removed here to save memory in case of a large image
     del inside_seed, outside_seed
