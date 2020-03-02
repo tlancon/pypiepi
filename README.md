@@ -32,7 +32,7 @@ pip:
         from skimage.io import imshow
 
 3. You can either create a mask manually using your favorite segmentation editor, try to create it procedurally
-yourself, or take advantage of the hough_seeded_watershed() function from pypiepi, as shown here:
+yourself, or take advantage of the `hough_seeded_watershed()` function from pypiepi, as shown here:
 
         segmentation = ppp.hough_seeded_watershed('data/pi-pie.jpg', radius=600, radius_width=25)
         imshow(segmentation)
