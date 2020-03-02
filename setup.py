@@ -1,7 +1,5 @@
 import setuptools
 
-with open('README.md', 'r') as fc:
-    long_description = fc.read()
 with open('requirements.txt', 'r') as fc:
     requirements = [line.strip() for line in fc]
 
@@ -10,8 +8,7 @@ setuptools.setup(
     version='0.0.1',
     author='Trevor Lancon',
     description='A library for everything you need to simulate pi on pictures of pies in Python.',
-    long_description=long_description,
-    long_description_content_type='text/md',
+    long_description='A library for everything you need to simulate pi on pictures of pies in Python.',
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
