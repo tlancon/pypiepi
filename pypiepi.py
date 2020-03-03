@@ -87,10 +87,6 @@ def hough_seeded_watershed(image, radius, radius_width, edge_size=3):
 
     return segmentation
 
-    # TODO Test using gradient image instead of Canny to save a computation
-    # TODO Test excluding median when computing gradient
-    # TODO Attempt to parallelize hough_circle
-
 
 def auto_crop(mask):
     """
@@ -117,8 +113,6 @@ def auto_crop(mask):
     ymax = _np.max(ybounds)
 
     return mask[xmin:xmax+1, ymin:ymax+1]
-
-    # TODO Add optional "square" parameter, make compatible with 3D arrays, then submit to scikit-image
 
 
 def simulate_pi(mask, export_image=False):
@@ -148,10 +142,3 @@ def simulate_pi(mask, export_image=False):
     calculated_pi = (float(points_inside_pie) / total_points) * 4
 
     return calculated_pi
-
-    # TODO Optionally return image showing hits/non-hits
-
-# TODO Make tutorials using open domain images
-# TODO Handle cases where wedge is cut from pie (oh lawd)
-# TODO Add algorithm to simulate pi using small packets of "darts" until convergence
-# TODO Make function just_look_at_it() to show the pie with a scale bar
