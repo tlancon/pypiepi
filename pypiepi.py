@@ -1,12 +1,11 @@
 import numpy as _np
-from scipy.ndimage import binary_fill_holes as _binary_fill_holes
 from skimage.util import img_as_ubyte as _img_as_ubyte
 from skimage.color import rgb2gray as _rgb2gray
 from skimage.io import imread as _imread
 from skimage.feature import canny as _canny
 from skimage.transform import hough_circle as _hough_circle
 from skimage.transform import hough_circle_peaks as _hough_circle_peaks
-from skimage.draw import circle_perimeter as _circle_perimeter
+from skimage.draw import circle as _circle
 from skimage.morphology import disk as _disk
 from skimage.morphology import watershed as _watershed
 from skimage.filters.rank import median as _median
@@ -70,13 +69,12 @@ def hough_seeded_watershed(image, radius, radius_width, edge_size=3):
     # cx, cy, and r are returned as arrays, but circle_perimeter requires ints:
     cy, cx, r = map(int, [cy, cx, r])
 
-    rr, cc = _circle_perimeter(cy, cx, r-int(radius_width/2), shape=input_image.shape)
+    rr, cc = _circle(cy, cx, r-int(radius_width/2), shape=input_image.shape)
     inside_seed[rr, cc] = 1
-    inside_seed = _binary_fill_holes(inside_seed)
 
-    rr, cc = _circle_perimeter(cy, cx, r + int(radius_width / 2), shape=input_image.shape)
+    rr, cc = _circle(cy, cx, r + int(radius_width / 2), shape=input_image.shape)
     outside_seed[rr, cc] = 1
-    outside_seed = ~_binary_fill_holes(outside_seed)
+    outside_seed = _np.logical_not(outside_seed)
 
     seeds = (inside_seed + 2*outside_seed).astype(_np.uint8)
     # separate seeds are no longer needed and are best removed here to save memory in case of a large image
