@@ -1,4 +1,5 @@
 import numpy as _np
+import tkinter as tk
 from skimage.util import img_as_ubyte as _img_as_ubyte
 from skimage.color import rgb2gray as _rgb2gray
 from skimage.io import imread as _imread
@@ -11,6 +12,14 @@ from skimage.morphology import watershed as _watershed
 from skimage.filters.rank import median as _median
 from skimage.filters.rank import gradient as _gradient
 from skimage.segmentation import join_segmentations as _join_segmentations
+from measure import MeasureRadiusApp
+
+
+def measure_radius(image):
+    root = tk.Tk()
+    root.title('Measure Radius')
+    MeasureRadiusApp(root, image_path=image)
+    root.mainloop()
 
 
 def hough_seeded_watershed(image, radius, radius_width, edge_size=3):
