@@ -163,11 +163,12 @@ class SimulatePi:
     """
     Perform a converging simulation of pi.
     """
-    def __init__(self, mask=None, histories=314, criterion=0.0314):
+    def __init__(self, mask=None, histories=314, criterion=0.0314, verbose=True):
         self.mask = mask
         self.simulation_image = None
         self.max_histories = histories
         self.convergence_criterion = criterion
+        self.verbose = verbose
         self.simulated_pi = None
 
     def run(self):
@@ -184,7 +185,7 @@ class SimulatePi:
         convergence = 314
         histories = 0
         hits = 0
-        print("History | Convergence | pi")
+        self.verbosity_print("History | Convergence | pi")
         while convergence > self.convergence_criterion and histories < self.max_histories:
             dart_x = _np.random.randint(0, x_len)
             dart_y = _np.random.randint(0, y_len)
@@ -196,4 +197,8 @@ class SimulatePi:
             histories += 1
             self.simulated_pi = (float(hits) / histories) * 4
             convergence = abs(_np.pi - self.simulated_pi)
-            print(f"{histories} | {convergence} | {self.simulated_pi}")
+            self.verbosity_print(f"{histories} | {convergence} | {self.simulated_pi}")
+
+    def verbosity_print(self, message):
+        if self.verbose is True:
+            print(message)
