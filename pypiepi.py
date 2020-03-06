@@ -157,3 +157,43 @@ def calculate_pi(mask, export_image=False):
     calculated_pi = (float(points_inside_pie) / total_points) * 4
 
     return calculated_pi
+
+
+class SimulatePi:
+    """
+    Perform a converging simulation of pi.
+    """
+    def __init__(self, mask=None, histories=314, criterion=0.314):
+        self.mask = mask
+        self.simulation_image = None
+        self.max_histories = histories
+        self.conv_criterion = criterion
+        self.simulated_pi = None
+
+    def run(self):
+        """
+        DO DOCSTRING
+        """
+        if self.mask is None:
+            return 'Please set SimulatePi.mask to the binary image on which to simulate pi.'
+
+        x_len, y_len = self.mask.shape
+
+        self.simulation_image = _np.copy(self.mask)
+
+        convergence = 314
+        histories = 0
+        hits = 0
+        print("History | Convergence | pi")
+        while convergence > self.conv_criterion or histories < self.max_histories:
+            dart_x = _np.random.randint(0, x_len)
+            dart_y = _np.random.randint(0, y_len)
+            if self.mask[dart_x, dart_y] == 1:
+                hits += 1
+                self.simulation_image[dart_x, dart_y] = 2
+            else:
+                self.simulation_image[dart_x, dart_y] = 3
+            histories += 1
+            self.simulated_pi = (float(hits) / histories) * 4
+            convergence = abs(_np.pi - self.simulated_pi)
+            print(f"{histories} | {convergence} | {self.simulated_pi}")
