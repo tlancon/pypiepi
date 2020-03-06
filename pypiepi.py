@@ -170,6 +170,8 @@ class SimulatePi:
         self.convergence_criterion = criterion
         self.verbose = verbose
         self.simulated_pi = None
+        self.convergence_history = _np.array([])
+        self.pi_history = _np.array([])
 
     def run(self):
         """
@@ -197,6 +199,8 @@ class SimulatePi:
             histories += 1
             self.simulated_pi = (float(hits) / histories) * 4
             convergence = abs(_np.pi - self.simulated_pi)
+            self.convergence_history = _np.append(self.convergence_history, convergence)
+            self.pi_history = _np.append(self.pi_history, self.simulated_pi)
             self.verbosity_print(f"{histories} | {convergence} | {self.simulated_pi}")
 
     def verbosity_print(self, message):
