@@ -130,7 +130,7 @@ def auto_crop(mask):
     return mask[xmin:xmax+1, ymin:ymax+1]
 
 
-def simulate_pi(mask, export_image=False):
+def calculate_pi(mask, export_image=False):
     """
     Calculates circularity of an object by simulating pi on its mask. Ideal circles will return values close to 3.14etc.
 

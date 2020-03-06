@@ -48,7 +48,7 @@ our bounding box is as close as possible to a unit square (a key assumption of t
 
 6. After cropping, we are ready to simulate pi:
 
-        ppp.simulate_pi(cropped)
+        ppp.calculate_pi(cropped)
 
 7. For this image, the result is quite close - about 3.12!
 
@@ -63,7 +63,7 @@ our bounding box is as close as possible to a unit square (a key assumption of t
         import pypiepi as ppp
         segmentation = ppp.hough_seeded_watershed('data/pi-pie.jpg', radius=600, radius_width=25)
         cropped = ppp.auto_crop(segmentation)
-        ppp.simulate_pi(cropped)
+        ppp.calculate_pi(cropped)
 
 ## Attributions
 - All images in data/ are from [Pixabay](https://pixabay.com) and are part of the [public domain](https://pixabay.com/service/license/).
