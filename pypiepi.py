@@ -16,6 +16,14 @@ from measure import MeasureRadiusApp
 
 
 def measure_radius(image):
+    """
+    Calls the MeasureRadiusApp window for the user to interactively determine radius of an object.
+
+    Parameters
+    ---------
+    image : string
+        Path to the image.
+    """
     root = tk.Tk()
     root.title('Measure Radius')
     MeasureRadiusApp(root, image_path=image)
