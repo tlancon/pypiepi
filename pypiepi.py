@@ -163,11 +163,11 @@ class SimulatePi:
     """
     Perform a converging simulation of pi.
     """
-    def __init__(self, mask=None, histories=314, criterion=0.314):
+    def __init__(self, mask=None, histories=314, criterion=0.0314):
         self.mask = mask
         self.simulation_image = None
         self.max_histories = histories
-        self.conv_criterion = criterion
+        self.convergence_criterion = criterion
         self.simulated_pi = None
 
     def run(self):
@@ -185,7 +185,7 @@ class SimulatePi:
         histories = 0
         hits = 0
         print("History | Convergence | pi")
-        while convergence > self.conv_criterion or histories < self.max_histories:
+        while convergence > self.convergence_criterion and histories < self.max_histories:
             dart_x = _np.random.randint(0, x_len)
             dart_y = _np.random.randint(0, y_len)
             if self.mask[dart_x, dart_y] == 1:
