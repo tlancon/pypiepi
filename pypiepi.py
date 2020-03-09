@@ -13,6 +13,7 @@ from skimage.filters.rank import median as _median
 from skimage.filters.rank import gradient as _gradient
 from skimage.segmentation import join_segmentations as _join_segmentations
 from measure import MeasureRadiusApp
+from paint import SLICPainterApp
 
 
 def measure_radius(image):
@@ -24,10 +25,25 @@ def measure_radius(image):
     image : string
         Path to the image.
     """
-    root = tk.Tk()
-    root.title('Measure Radius')
-    MeasureRadiusApp(root, image_path=image)
-    root.mainloop()
+    root_mr = tk.Tk()
+    root_mr.title('Measure Radius')
+    MeasureRadiusApp(root_mr, image_path=image)
+    root_mr.mainloop()
+
+
+def paint_superpixels(image):
+    """
+    Calls the SLICPainterApp window for the user to interactively segment using superpixels.
+
+    Parameters
+    ---------
+    image : string
+        Path to the image.
+    """
+    root_ps = tk.Tk()
+    root_ps.title('Paint Superpixels')
+    SLICPainterApp(root_ps, image_path=image)
+    root_ps.mainloop()
 
 
 def hough_seeded_watershed(image, radius, radius_width, edge_size=3):
