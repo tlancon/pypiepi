@@ -8,6 +8,27 @@ from skimage.util import img_as_ubyte
 
 
 class SLICPainterApp:
+    """
+    An app that the user can use to manually paint their object by dragging their mouse across SLIC superpixels.
+
+    Attributes
+    ----------
+    input_image : str
+        String representing path to the image to segment.
+
+    superpixels : (N, M) array
+        Label image containing computed superpixels.
+
+    boundaries : (N, M, 3) array
+        RGB image showing the boundaries of the superpixels superimposed with input_image.
+
+    mask : (N, M, 3) array
+        RGB image containing the user's selection.
+
+    display_image : (N, M, 3) array
+        RGB image showing composite of the input_image, superpixel boundaries, and the mask.
+
+    """
     def __init__(self, master, image_path):
         self.master = master
 
@@ -43,7 +64,7 @@ class SLICPainterApp:
 
     def update_image(self):
         """
-        DO DOCSTRING
+        Updates the app's displayed image.
         """
         self.display_tk = ImageTk.PhotoImage(Image.fromarray(self.display_image))
         self.image_label.configure(image=self.display_tk)
@@ -51,7 +72,7 @@ class SLICPainterApp:
 
     def clear_mask(self):
         """
-        DO DOCSTRING
+        Clears the mask and updates the app's displayed image.
         """
         self.mask = np.zeros_like(self.boundaries)
         self.display_image = np.copy(self.boundaries)
@@ -59,7 +80,7 @@ class SLICPainterApp:
 
     def update_superpixels(self, event):
         """
-        DO DOCSTRING
+        Recomputes superpixels with the user's selected parameters and displays the boundary image in the app.
         """
         if event.widget in [self.segments, self.compactness]:
             self.superpixels = slic(self.input_image, n_segments=self.segments.get(),
@@ -71,7 +92,7 @@ class SLICPainterApp:
 
     def add_region(self, event):
         """
-        Adds a superpixel to the segmentation.
+        Adds superpixels to the segmentation by dragging the left mouse button.
         """
         if event.widget is self.image_label:
             chosen_region = self.superpixels[event.y, event.x]
@@ -82,7 +103,7 @@ class SLICPainterApp:
 
     def remove_region(self, event):
         """
-        Removes a superpixel from the segmentation.
+        Removes superpixels from the segmentation by dragging the right mouse button.
         """
         if event.widget is self.image_label:
             chosen_region = self.superpixels[event.y, event.x]
@@ -94,7 +115,7 @@ class SLICPainterApp:
 
     def flood_fill(self, event):
         """
-        DO DOCSTRING
+        Fills a contour selected by the middle mouse button with the mask.
         """
         if event.widget is self.image_label:
             for i in range(3):
