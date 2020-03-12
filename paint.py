@@ -35,20 +35,25 @@ class SLICPainterApp:
         self.input_image = imread(image_path)
         max_segments = int(0.01 * (self.input_image.shape[0] * self.input_image.shape[1]))
 
+        user_instructions = 'Drag left mouse button to paint superpixels. Drag right mouse button to erase. ' \
+                            'Middle click to fill a contour. Close the app when finished.'
+        self.instructions = tk.Label(master, text=user_instructions)
+        self.instructions.grid(row=0, column=1, sticky=tk.NW)
+
         self.segments = tk.Scale(master, label='Segments', orient=tk.VERTICAL, from_=10, to=max_segments, resolution=1)
         self.segments.set(300)
-        self.segments.grid(row=0, column=0, sticky=tk.W)
+        self.segments.grid(row=1, column=0, sticky=tk.W)
 
         self.compactness = tk.Scale(master, label='Compactness', orient=tk.VERTICAL, from_=0.01, to=100,
                                     resolution=0.01)
         self.compactness.set(20)
-        self.compactness.grid(row=1, column=0, sticky=tk.W)
+        self.compactness.grid(row=2, column=0, sticky=tk.W)
 
         self.clear = tk.Button(master, text='Clear', command=self.clear_mask)
-        self.clear.grid(row=2, column=0, sticky=tk.S)
+        self.clear.grid(row=3, column=0, sticky=tk.S)
 
         self.image_label = tk.Label(master)
-        self.image_label.grid(row=0, column=1, rowspan=2)
+        self.image_label.grid(row=1, column=1, rowspan=3)
 
         self.superpixels = slic(self.input_image, n_segments=self.segments.get(), compactness=self.compactness.get())
         self.boundaries = img_as_ubyte(mark_boundaries(self.input_image, self.superpixels))
