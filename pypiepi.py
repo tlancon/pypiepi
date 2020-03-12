@@ -35,15 +35,24 @@ def paint_superpixels(image):
     """
     Calls the SLICPainterApp window for the user to interactively segment using superpixels.
 
+    SLIC segments and compactness sliders adjust the SLIC algorithm parameters. See documentation here:
+    https://scikit-image.org/docs/dev/api/skimage.segmentation.html#skimage.segmentation.slic
+
     Parameters
     ---------
     image : string
         Path to the image.
+
+    Returns
+    -------
+    (N, M) array
+        Binary segmentation of the circular object.
     """
     root_ps = tk.Tk()
-    root_ps.title('Paint Superpixels')
-    SLICPainterApp(root_ps, image_path=image)
+    root_ps.title('Superpixel Painter')
+    painter_app = SLICPainterApp(root_ps, image_path=image)
     root_ps.mainloop()
+    return painter_app.mask
 
 
 def hough_seeded_watershed(image, radius, radius_width, edge_size=3):
