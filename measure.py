@@ -3,6 +3,11 @@ from PIL import ImageTk, Image
 
 
 class MeasureRadiusApp:
+    """
+    Simple app to measure the distance from the selected center of an object to another point along its radius.
+
+    Left-click to choose a center, right-click to choose a point to measure the distance to.
+    """
     def __init__(self, master, image_path):
         self.master = master
 
