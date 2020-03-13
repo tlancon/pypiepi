@@ -5,7 +5,7 @@ with open('requirements.txt', 'r') as fc:
 
 setuptools.setup(
     name='pypiepi',
-    version='0.0.1',
+    version='1.0.0',
     author='Trevor Lancon',
     description='A library for everything you need to simulate pi on pictures of pies in Python.',
     long_description='A library for everything you need to simulate pi on pictures of pies in Python.',
