@@ -19,7 +19,7 @@ algorithm.
 Actual pies are rarely perfect circles since the dough is pinched, typically in a pattern, all around the circumference.
 This pinching is also sometimes exaggerated when the pie is baked and those edges get all delicious and crispy.
 
-Let's use pypiepi to test how curcular and pie-like and an actual pie is! Consider the example using `data/pi-pie.jpg`:
+Let's use pypiepi to test how circular and pie-like and an actual pie is! Consider the example using `data/pi-pie.jpg`:
 
 ![A pi pie.](data/pi-pie.jpg)
 
@@ -56,6 +56,9 @@ a variable, such as `manual_mask`, so that the mask you create can be used later
     - Clear the mask using the "Clear" button
     
     ![The superpixel painter](resources/SuperpixelPainter.gif)
+    
+    Once you've made your pie mask, close the window and the mask is returned to the variable you set. In this case,
+    our mask ends up in `manual_mask`
 
 5. The automatic method uses a Hough transform to detect the most prominent circle in the image, then seeds a watershed
 from that circle. This does require two inputs: `radius` and `radius width`. There's an app for that!
@@ -65,7 +68,7 @@ from that circle. This does require two inputs: `radius` and `radius width`. The
     A window pops up that allows you to:
     - Left click to define the center
     - Right click to define a point along the outer edge
-    - Shows you the radius we need
+    - Calculate the radius (automatic)
     
     ![Measuring the radius of a pie.](resources/MeasureRadius.gif)
     
@@ -134,10 +137,10 @@ slowly converge:
     
     Much cooler! For a more accurate simulation, try using more histories or a lower convergence criterion. Note,
     however, that the more a pie deviates from a true circle, the larger your convergence tolerance will need to be
-    to allow the simulation to complete.
+    to allow the simulation to converge.
     
 10. Finally, to see an illustration of the points that were randomly placed inside/outside the pie for this simulation,
-    show the simulation image
+    show the simulation image:
     
         >>> automatic_sim = ppp.SimulatePi(manual_mask[:,:,0], histories=3141, criterion=0.00000314, verbose=True)
         >>> automatic_sim.run()
@@ -167,7 +170,7 @@ slowly converge:
         automatic_mask = ppp.segment_pie_auto(my_pie, radius=400, radius_width=20)
         automatic_mask = ppp.just_the_pie(automatic_mask)
         print(f"\nSimple pi calculation: {ppp.calculate_pi(automatic_mask)}")
-        sim = ppp.SimulatePi(automatic_mask, histories=314, criterion=0.0314, verbose=True)
+        sim = ppp.SimulatePi(automatic_mask, histories=314, criterion=0.00314, verbose=True)
         print(f"\nRobust pi simulation:")
         sim.run()
 
