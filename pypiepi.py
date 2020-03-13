@@ -16,43 +16,154 @@ from measure import MeasureRadiusApp
 from paint import SLICPainterApp
 
 
-def measure_radius(image):
+class SimulatePi:
     """
-    Calls the MeasureRadiusApp window for the user to interactively determine radius of an object.
+    Perform a converging simulation of pi. The user provides a mask, the maximum number of points to simulate on the
+    mask, and the convergence criterion. When the simulation reaches EITHER the max number of histories OR it converges,
+    the simulation stops and returns the value of pi.
+
+    This is a slow, non-vectorized process that is completely antithetical to numpy. It does, however, give you that
+    "hacker" feeling of having a ton of output on your screen and watching a number slowly converge to completion.
 
     Parameters
-    ---------
-    image : string
-        Path to the image.
+    ----------
+    mask : (N, M) array
+        Binary, 2D array of mask of pie.
+
+    histories : int
+        Maximum number of points to simulate.
+
+    criterion : float
+        Convergence criterion to reach, or the minimum acceptable difference between the simulated and real values of
+        pi.
+
+    verbose : bool
+        If true, the value of pi and convergence are printed during each history of the simulation.
+
+    Attributes
+    ----------
+    simulation_image : (N, M) array
+        Label image showing hits inside/outside the pie mask.
+
+    convergence_history : (N) array
+        Array containing the convergence metric for each iteration of the simulation.
+
+    pi_history : (N) array
+        Array containing the evolving value of pi for each iteration of the simulation.
+
+    simulated_pi : float
+        Value of pi that is found during the simulation.
+
     """
-    root_mr = tk.Tk()
-    root_mr.title('Measure Radius')
-    MeasureRadiusApp(root_mr, image_path=image)
-    root_mr.mainloop()
+
+    def __init__(self, mask=None, histories=314, criterion=0.0314, verbose=True):
+        self.mask = mask
+        self.simulation_image = None
+        self.max_histories = histories
+        self.convergence_criterion = criterion
+        self.verbose = verbose
+        self.simulated_pi = None
+        self.convergence_history = _np.array([])
+        self.pi_history = _np.array([])
+
+    def run(self):
+        """
+        Performs the simulation given the parameters provided by the user.
+        """
+        if self.mask is None:
+            return 'Please set SimulatePi.mask to the binary image on which to simulate pi.'
+
+        x_len, y_len = self.mask.shape
+
+        self.simulation_image = _np.copy(self.mask)
+
+        convergence = 314
+        histories = 0
+        hits = 0
+        self.verbosity_print("History | Convergence | pi")
+        while convergence > self.convergence_criterion and histories < self.max_histories:
+            dart_x = _np.random.randint(0, x_len)
+            dart_y = _np.random.randint(0, y_len)
+            if self.mask[dart_x, dart_y] == 1:
+                hits += 1
+                self.simulation_image[dart_x, dart_y] = 2
+            else:
+                self.simulation_image[dart_x, dart_y] = 3
+            histories += 1
+            self.simulated_pi = (float(hits) / histories) * 4
+            convergence = abs(_np.pi - self.simulated_pi)
+            self.convergence_history = _np.append(self.convergence_history, convergence)
+            self.pi_history = _np.append(self.pi_history, self.simulated_pi)
+            self.verbosity_print(f"{histories} | {convergence} | {self.simulated_pi}")
+
+    def verbosity_print(self, message):
+        """
+        Prints information to the user if they want verbose output. Why would you use this method if you don't want
+        verbose output?
+
+        Parameters
+        ----------
+        message : string
+            Message to print if verbosity=True.
+        """
+        if self.verbose is True:
+            print(message)
 
 
-def paint_superpixels(image):
+def calculate_pi(mask, export_image=False):
     """
-    Calls the SLICPainterApp window for the user to interactively segment using superpixels.
+    Calculates circularity of an object by simulating pi on its mask. Ideal circles will return values close to 3.14etc.
 
-    SLIC segments and compactness sliders adjust the SLIC algorithm parameters. See documentation here:
-    https://scikit-image.org/docs/dev/api/skimage.segmentation.html#skimage.segmentation.slic
+    Attributes
+    ----------
+    mask : (N, M) array
+        Binary, 2D array of mask of pie.
 
-    Parameters
-    ---------
-    image : string
-        Path to the image.
+    Returns
+    -------
+    float
+        Calculated value of pi
+    """
+
+    x_len, y_len = mask.shape
+
+    rand_array = _np.zeros(shape=(x_len, y_len), dtype=_np.uint8)
+    rand_array[:, :] = (_np.random.randint(low=0, high=255, size=(x_len, y_len)) >= 128).astype(_np.uint8)
+
+    result = _join_segmentations(rand_array, mask)
+
+    points_inside_pie = _np.count_nonzero((result == 3).astype(_np.uint8))
+    total_points = _np.count_nonzero(rand_array.astype(_np.uint8))
+    calculated_pi = (float(points_inside_pie) / total_points) * 4
+
+    return calculated_pi
+
+
+def auto_crop(mask):
+    """
+    Removes columns and rows of zeros inward from the bounding box until values are reached. For a binary image, this
+    results in the smallest possible bounding box containing the labeled pixels.
+
+    Attributes
+    ----------
+    mask : (N, M) array
+        2D array of mask of pie.
 
     Returns
     -------
     (N, M) array
-        Binary segmentation of the circular object.
+        Cropped image
     """
-    root_ps = tk.Tk()
-    root_ps.title('Superpixel Painter')
-    painter_app = SLICPainterApp(root_ps, image_path=image)
-    root_ps.mainloop()
-    return painter_app.mask
+
+    xbounds = _np.where(mask.any(axis=1))[0]
+    xmin = _np.min(xbounds)
+    xmax = _np.max(xbounds)
+
+    ybounds = _np.where(mask.any(axis=0))[0]
+    ymin = _np.min(ybounds)
+    ymax = _np.max(ybounds)
+
+    return mask[xmin:xmax+1, ymin:ymax+1]
 
 
 def hough_seeded_watershed(image, radius, radius_width, edge_size=3):
@@ -128,106 +239,40 @@ def hough_seeded_watershed(image, radius, radius_width, edge_size=3):
     return segmentation
 
 
-def auto_crop(mask):
+def paint_superpixels(image):
     """
-    Removes columns and rows of zeros inward from the bounding box until values are reached. For a binary image, this
-    results in the smallest possible bounding box containing the labeled pixels.
+    Calls the SLICPainterApp window for the user to interactively segment using superpixels.
 
-    Attributes
-    ----------
-    mask : (N, M) array
-        2D array of mask of pie.
+    SLIC segments and compactness sliders adjust the SLIC algorithm parameters. See documentation here:
+    https://scikit-image.org/docs/dev/api/skimage.segmentation.html#skimage.segmentation.slic
+
+    Parameters
+    ---------
+    image : string
+        Path to the image.
 
     Returns
     -------
     (N, M) array
-        Cropped image
+        Binary segmentation of the circular object.
     """
-
-    xbounds = _np.where(mask.any(axis=1))[0]
-    xmin = _np.min(xbounds)
-    xmax = _np.max(xbounds)
-
-    ybounds = _np.where(mask.any(axis=0))[0]
-    ymin = _np.min(ybounds)
-    ymax = _np.max(ybounds)
-
-    return mask[xmin:xmax+1, ymin:ymax+1]
+    root_ps = tk.Tk()
+    root_ps.title('Superpixel Painter')
+    painter_app = SLICPainterApp(root_ps, image_path=image)
+    root_ps.mainloop()
+    return painter_app.mask
 
 
-def calculate_pi(mask, export_image=False):
+def measure_radius(image):
     """
-    Calculates circularity of an object by simulating pi on its mask. Ideal circles will return values close to 3.14etc.
+    Calls the MeasureRadiusApp window for the user to interactively determine radius of an object.
 
-    Attributes
-    ----------
-    mask : (N, M) array
-        Binary, 2D array of mask of pie.
-
-    Returns
-    -------
-    float
-        Calculated value of pi
+    Parameters
+    ---------
+    image : string
+        Path to the image.
     """
-
-    x_len, y_len = mask.shape
-
-    rand_array = _np.zeros(shape=(x_len, y_len), dtype=_np.uint8)
-    rand_array[:, :] = (_np.random.randint(low=0, high=255, size=(x_len, y_len)) >= 128).astype(_np.uint8)
-
-    result = _join_segmentations(rand_array, mask)
-
-    points_inside_pie = _np.count_nonzero((result == 3).astype(_np.uint8))
-    total_points = _np.count_nonzero(rand_array.astype(_np.uint8))
-    calculated_pi = (float(points_inside_pie) / total_points) * 4
-
-    return calculated_pi
-
-
-class SimulatePi:
-    """
-    Perform a converging simulation of pi.
-    """
-    def __init__(self, mask=None, histories=314, criterion=0.0314, verbose=True):
-        self.mask = mask
-        self.simulation_image = None
-        self.max_histories = histories
-        self.convergence_criterion = criterion
-        self.verbose = verbose
-        self.simulated_pi = None
-        self.convergence_history = _np.array([])
-        self.pi_history = _np.array([])
-
-    def run(self):
-        """
-        DO DOCSTRING
-        """
-        if self.mask is None:
-            return 'Please set SimulatePi.mask to the binary image on which to simulate pi.'
-
-        x_len, y_len = self.mask.shape
-
-        self.simulation_image = _np.copy(self.mask)
-
-        convergence = 314
-        histories = 0
-        hits = 0
-        self.verbosity_print("History | Convergence | pi")
-        while convergence > self.convergence_criterion and histories < self.max_histories:
-            dart_x = _np.random.randint(0, x_len)
-            dart_y = _np.random.randint(0, y_len)
-            if self.mask[dart_x, dart_y] == 1:
-                hits += 1
-                self.simulation_image[dart_x, dart_y] = 2
-            else:
-                self.simulation_image[dart_x, dart_y] = 3
-            histories += 1
-            self.simulated_pi = (float(hits) / histories) * 4
-            convergence = abs(_np.pi - self.simulated_pi)
-            self.convergence_history = _np.append(self.convergence_history, convergence)
-            self.pi_history = _np.append(self.pi_history, self.simulated_pi)
-            self.verbosity_print(f"{histories} | {convergence} | {self.simulated_pi}")
-
-    def verbosity_print(self, message):
-        if self.verbose is True:
-            print(message)
+    root_mr = tk.Tk()
+    root_mr.title('Measure Radius')
+    MeasureRadiusApp(root_mr, image_path=image)
+    root_mr.mainloop()
