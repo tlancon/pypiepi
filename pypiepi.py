@@ -90,8 +90,8 @@ class SimulatePi:
             else:
                 self.simulation_image[dart_x, dart_y] = 3
             n_histories += 1
-            convergence = abs(_np.pi - self.simulated_pi)
             self.simulated_pi = (float(hits) / n_histories) * 4
+            convergence = abs(_np.pi - self.simulated_pi)
             self.convergence_history = _np.append(self.convergence_history, convergence)
             self.pi_history = _np.append(self.pi_history, self.simulated_pi)
             self.verbosity_print(f"{n_histories} | {convergence} | {self.simulated_pi}")
