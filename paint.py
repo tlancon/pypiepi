@@ -7,7 +7,7 @@ from skimage.morphology import flood_fill
 from skimage.util import img_as_ubyte
 
 
-class SLICPainterApp:
+class PaintThePie:
     """
     An app that the user can use to manually paint their object by dragging their mouse across SLIC superpixels.
 

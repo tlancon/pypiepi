@@ -13,7 +13,7 @@ from skimage.filters.rank import median as _median
 from skimage.filters.rank import gradient as _gradient
 from skimage.segmentation import join_segmentations as _join_segmentations
 from measure import MeasureRadiusApp
-from paint import SLICPainterApp
+from paint import PaintThePie
 
 
 class SimulatePi:
@@ -139,7 +139,7 @@ def calculate_pi(mask, export_image=False):
     return calculated_pi
 
 
-def auto_crop(mask):
+def just_the_pie(mask):
     """
     Removes columns and rows of zeros inward from the bounding box until values are reached. For a binary image, this
     results in the smallest possible bounding box containing the labeled pixels.
@@ -166,7 +166,7 @@ def auto_crop(mask):
     return mask[xmin:xmax+1, ymin:ymax+1]
 
 
-def hough_seeded_watershed(image, radius, radius_width, edge_size=3):
+def segment_pie_auto(image, radius, radius_width, edge_size=3):
     """
     Performs a high-level combination of the Hough transform and watershed to segment the true edge of the most
     prominent circular object in an image.
@@ -239,9 +239,9 @@ def hough_seeded_watershed(image, radius, radius_width, edge_size=3):
     return segmentation
 
 
-def paint_superpixels(image):
+def segment_pie_manual(image):
     """
-    Calls the SLICPainterApp window for the user to interactively segment using superpixels.
+    Calls the PaintThePie window for the user to interactively segment using superpixels.
 
     SLIC segments and compactness sliders adjust the SLIC algorithm parameters. See documentation here:
     https://scikit-image.org/docs/dev/api/skimage.segmentation.html#skimage.segmentation.slic
@@ -257,8 +257,8 @@ def paint_superpixels(image):
         Binary segmentation of the circular object.
     """
     root_ps = tk.Tk()
-    root_ps.title('Superpixel Painter')
-    painter_app = SLICPainterApp(root_ps, image_path=image)
+    root_ps.title('Painter the Pie')
+    painter_app = PaintThePie(root_ps, image_path=image)
     root_ps.mainloop()
     return painter_app.mask
 

@@ -34,9 +34,9 @@ pip:
         from skimage.io import imshow
 
 3. You can either create a mask manually using your favorite segmentation editor, try to create it procedurally
-yourself, or take advantage of the `hough_seeded_watershed()` function from pypiepi, as shown here:
+yourself, or take advantage of the `segment_pie_auto()` function from pypiepi, as shown here:
 
-        segmentation = ppp.hough_seeded_watershed('data/pi-pie.jpg', radius=600, radius_width=25)
+        segmentation = ppp.segment_pie_auto('data/pi-pie.jpg', radius=600, radius_width=25)
         imshow(segmentation)
 
 4. The result is that `segmentation` contains a binary Numpy array containing the mask of the pie. You will need to
@@ -45,7 +45,7 @@ adjust the radius and radius_width parameters for each image appropriately.
 5. To prepare the mask for simulation, we need to crop the edges of the image as close as possible to the mask so that
 our bounding box is as close as possible to a unit square (a key assumption of the algorithm):
 
-        cropped = ppp.auto_crop(segmentation)
+        cropped = ppp.just_the_pie(segmentation)
         imshow(cropped)
 
 6. After cropping, we are ready to simulate pi:
@@ -63,8 +63,8 @@ our bounding box is as close as possible to a unit square (a key assumption of t
 2. Import pypiepi and segment, crop, then simulate using a picture of a pie:
 
         import pypiepi as ppp
-        segmentation = ppp.hough_seeded_watershed('data/pi-pie.jpg', radius=600, radius_width=25)
-        cropped = ppp.auto_crop(segmentation)
+        segmentation = ppp.segment_pie_auto('data/pi-pie.jpg', radius=600, radius_width=25)
+        cropped = ppp.just_the_pie(segmentation)
         ppp.calculate_pi(cropped)
 
 ## Attributions
