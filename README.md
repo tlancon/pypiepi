@@ -26,7 +26,9 @@ Let's use pypiepi to test how circular and pie-like and an actual pie is! Consid
 1. Download and unzip the project to a directory, and with a terminal or CMD window inside that directory, install using
 pip:
 
-        > pip install .
+```BatchFile
+> pip install .
+```
 
 2. Import the package into a Python console along with a function for displaying results:
 
