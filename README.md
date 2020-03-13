@@ -45,8 +45,8 @@ variable:
 >>> my_pie = 'data/pi-pie.jpg'
 ```
 
-    Before we can simulate anything, we need to define where in the image the pie is. This process is called
-    **segmentation**. `pypiepi` has both a manual and automatic method for this. Let's try both.
+Before we can simulate anything, we need to define where in the image the pie is. This process is called
+**segmentation**. `pypiepi` has both a manual and automatic method for this. Let's try both.
 
 4. The manual method uses **superpixels** to make segmenting the pie easy and quick. Open the superpixel painter using
 a variable, such as `manual_mask`, so that the mask you create can be used later:
@@ -55,18 +55,18 @@ a variable, such as `manual_mask`, so that the mask you create can be used later
 >>> manual_mask = ppp.segment_pie_manual(my_pie)
 ```
     
-    A window pops up that allows you to:
-    - Define parameters for the
-    [SLIC superpixel algorithm](https://scikit-image.org/docs/dev/api/skimage.segmentation.html#skimage.segmentation.slic)
-    - Paint the superpixels you want by dragging the left mouse button
-    - Erase superpixels by dragging the right mouse button
-    - Fill in a contour by clicking the middle mouse button
-    - Clear the mask using the "Clear" button
-    
-    ![The superpixel painter](resources/SuperpixelPainter.gif)
-    
-    Once you've made your pie mask, close the window and the mask is returned to the variable you set. In this case,
-    our mask ends up in `manual_mask`
+A window pops up that allows you to:
+- Define parameters for the
+[SLIC superpixel algorithm](https://scikit-image.org/docs/dev/api/skimage.segmentation.html#skimage.segmentation.slic)
+- Paint the superpixels you want by dragging the left mouse button
+- Erase superpixels by dragging the right mouse button
+- Fill in a contour by clicking the middle mouse button
+- Clear the mask using the "Clear" button
+
+![The superpixel painter](resources/SuperpixelPainter.gif)
+
+Once you've made your pie mask, close the window and the mask is returned to the variable you set. In this case,
+our mask ends up in `manual_mask`
 
 5. The automatic method uses a Hough transform to detect the most prominent circle in the image, then seeds a watershed
 from that circle. This does require two inputs: `radius` and `radius width`. There's an app for that!
@@ -75,15 +75,15 @@ from that circle. This does require two inputs: `radius` and `radius width`. The
 >>> ppp.measure_radius(my_pie)
 ```
     
-    A window pops up that allows you to:
-    - Left click to define the center
-    - Right click to define a point along the outer edge
-    - Calculate the radius (automatic)
-    
-    ![Measuring the radius of a pie.](resources/MeasureRadius.gif)
-    
-    From this we see that our pie has a radius of ~410 pixels, but that it varies by about 20 pixels. Using these
-    measurements, we can automatically segment the pie and make another mask:
+A window pops up that allows you to:
+- Left click to define the center
+- Right click to define a point along the outer edge
+- Calculate the radius (automatic)
+
+![Measuring the radius of a pie.](resources/MeasureRadius.gif)
+
+From this we see that our pie has a radius of ~410 pixels, but that it varies by about 20 pixels. Using these
+measurements, we can automatically segment the pie and make another mask:
     
 ```python
 >>> automatic_mask = ppp.segment_pie_auto(my_pie, radius=400, radius_width=20)
@@ -96,14 +96,14 @@ from that circle. This does require two inputs: `radius` and `radius width`. The
 >>> plt.show()
 ```
     
-    ![Manually segmented pie mask.](resources/ManualMask.png)
+![Manually segmented pie mask.](resources/ManualMask.png)
     
 ```python
 >>> imshow(automatic_mask)
 >>> plt.show()
 ```
     
-    ![Automatically segmented pie mask.](resources/AutomaticMask.png)
+![Automatically segmented pie mask.](resources/AutomaticMask.png)
 
 7. This entire simulation depends on the assumption that the diameter of the approximate circle (the pie mask) and the
 length of the sides of the square it's inscribed withing (the image boundary) are equal, but that isn't yet so for these
@@ -115,7 +115,7 @@ images! Thus, we need to crop the images so that the boundaries are equal to the
 >>> plt.show()
 ```
     
-    ![Manually segmented pie mask, cropped.](resources/ManualMaskCropped.png)
+![Manually segmented pie mask, cropped.](resources/ManualMaskCropped.png)
     
 ```python
 >>> automatic_mask = ppp.just_the_pie(automatic_mask)
@@ -123,7 +123,7 @@ images! Thus, we need to crop the images so that the boundaries are equal to the
 >>> plt.show()
 ```
     
-    ![Automatically segmented pie mask, cropped.](resources/AutomaticMaskCropped.png)
+![Automatically segmented pie mask, cropped.](resources/AutomaticMaskCropped.png)
 
 8. We now have all we need to simulate pi. There are two ways to do this in `pypiepi`. First, we'll calculate pie very
 quickly using a vectorized method. This is straightforward:
@@ -136,8 +136,8 @@ quickly using a vectorized method. This is straightforward:
 3.116325571153972
 ```
     
-    The returned values will vary slightly each time, but should be close to these. Congrats! You've simulated pie on a
-    pie in Python.
+The returned values will vary slightly each time, but should be close to these. Congrats! You've simulated pie on a
+pie in Python.
 
 9. Wasn't that a letdown? All that work for just a single number? Luckily `pypiepi` has a cooler way to simulate pi.
 To do that, let's throw away all these fancy numpy methods for vectorizing arrays and making things fast, and go back
@@ -159,9 +159,9 @@ History | Convergence | pi
 9 | 0.030481542478681956 | 3.111111111111111
 ```
     
-    Much cooler! For a more accurate simulation, try using more histories or a lower convergence criterion. Note,
-    however, that the more a pie deviates from a true circle, the larger your convergence tolerance will need to be
-    to allow the simulation to converge.
+Much cooler! For a more accurate simulation, try using more histories or a lower convergence criterion. Note,
+however, that the more a pie deviates from a true circle, the larger your convergence tolerance will need to be
+to allow the simulation to converge.
     
 10. Finally, to see an illustration of the points that were randomly placed inside/outside the pie for this simulation,
     show the simulation image:
@@ -181,7 +181,7 @@ History | Convergence | pi
 >>> plt.show()
 ```
     
-    ![Points placed on the pie during the simulation.](resources/SimulationImage.png)
+![Points placed on the pie during the simulation.](resources/SimulationImage.png)
 
 #### TL;DR
 
