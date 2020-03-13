@@ -78,10 +78,10 @@ class SimulatePi:
         self.simulation_image = _np.copy(self.mask)
 
         convergence = 314
-        histories = 0
+        n_histories = 0
         hits = 0
         self.verbosity_print("History | Convergence | pi")
-        while convergence > self.convergence_criterion or histories < self.max_histories:
+        while convergence > self.convergence_criterion or n_histories < self.max_histories:
             dart_x = _np.random.randint(0, x_len)
             dart_y = _np.random.randint(0, y_len)
             if self.mask[dart_x, dart_y] == 1:
@@ -89,13 +89,12 @@ class SimulatePi:
                 self.simulation_image[dart_x, dart_y] = 2
             else:
                 self.simulation_image[dart_x, dart_y] = 3
-            histories += 1
-            self.simulated_pi = (float(hits) / histories) * 4
+            self.simulated_pi = (float(hits) / n_histories) * 4
             convergence = abs(_np.pi - self.simulated_pi)
-            histories += 1
+            n_histories += 1
             self.convergence_history = _np.append(self.convergence_history, convergence)
             self.pi_history = _np.append(self.pi_history, self.simulated_pi)
-            self.verbosity_print(f"{histories} | {convergence} | {self.simulated_pi}")
+            self.verbosity_print(f"{n_histories} | {convergence} | {self.simulated_pi}")
 
     def verbosity_print(self, message):
         """
