@@ -121,7 +121,38 @@ slowly converge:
 
         >>> manual_sim = ppp.SimulatePi(manual_mask[:,:,0], histories=314, criterion=0.0314, verbose=True)
         >>> manual_sim.run()
-        
+        History | Convergence | pi
+        1 | 3.141592653589793 | 0.0
+        2 | 3.141592653589793 | 0.0
+        3 | 1.8082593202564599 | 1.3333333333333333
+        4 | 1.1415926535897931 | 2.0
+        5 | 0.7415926535897932 | 2.4
+        6 | 0.4749259869231266 | 2.6666666666666665
+        7 | 0.2844497964469359 | 2.857142857142857
+        8 | 0.14159265358979312 | 3.0
+        9 | 0.030481542478681956 | 3.111111111111111
+    
+    Much cooler! For a more accurate simulation, try using more histories or a lower convergence criterion. Note,
+    however, that the more a pie deviates from a true circle, the larger your convergence tolerance will need to be
+    to allow the simulation to complete.
+    
+10. Finally, to see an illustration of the points that were randomly placed inside/outside the pie for this simulation,
+    show the simulation image
+    
+        >>> automatic_sim = ppp.SimulatePi(manual_mask[:,:,0], histories=3141, criterion=0.00000314, verbose=True)
+        >>> automatic_sim.run()
+        History | Convergence | pi
+        1 | 0.8584073464102069 | 4.0
+        2 | 0.8584073464102069 | 4.0
+        3 | 0.4749259869231266 | 2.6666666666666665
+        ...
+        3139 | 0.033940955839961706 | 3.175533609429755
+        3140 | 0.03420352475415589 | 3.175796178343949
+        3141 | 0.03446592648024849 | 3.1760585800700416
+        >>> imshow(sim.simulation_image)
+        >>> plt.show()
+    
+    ![Points placed on the pie during the simulation.](resources/SimulationImage.png)
 
 #### TL;DR
 
@@ -129,12 +160,16 @@ slowly converge:
 
         pip install .
 
-2. Import pypiepi and segment, crop, then simulate using a picture of a pie:
+2. Import pypiepi, segment and crop a pie automatically, then simulate pi on it:
 
         import pypiepi as ppp
-        segmentation = ppp.segment_pie_auto('data/pi-pie.jpg', radius=600, radius_width=25)
-        cropped = ppp.just_the_pie(segmentation)
-        ppp.calculate_pi(cropped)
+        my_pie = 'data/pi-pie.jpg'
+        automatic_mask = ppp.segment_pie_auto(my_pie, radius=400, radius_width=20)
+        automatic_mask = ppp.just_the_pie(automatic_mask)
+        print(f"\nSimple pi calculation: {ppp.calculate_pi(automatic_mask)}")
+        sim = ppp.SimulatePi(automatic_mask, histories=314, criterion=0.0314, verbose=True)
+        print(f"\nRobust pi simulation:")
+        sim.run()
 
 ## Attributions
 - All images in data/ are from [Pixabay](https://pixabay.com) and are part of the [public domain](https://pixabay.com/service/license/).
