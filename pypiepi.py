@@ -81,7 +81,7 @@ class SimulatePi:
         histories = 0
         hits = 0
         self.verbosity_print("History | Convergence | pi")
-        while convergence > self.convergence_criterion and histories < self.max_histories:
+        while convergence > self.convergence_criterion or histories < self.max_histories:
             dart_x = _np.random.randint(0, x_len)
             dart_y = _np.random.randint(0, y_len)
             if self.mask[dart_x, dart_y] == 1:
