@@ -30,11 +30,11 @@ pip:
 
 2. Import the package into a Python console along with a function for displaying results:
 
-        ```python
-        >>> import pypiepi as ppp
-        >>> from skimage.io import imshow
-        >>> import matplotlib.pylot as plt
-        ```
+```python
+>>> import pypiepi as ppp
+>>> from skimage.io import imshow
+>>> import matplotlib.pylot as plt
+```
 
 3. You'll need to use the path to the picture you want to work with quite a bit, so go ahead and save that to a
 variable:
