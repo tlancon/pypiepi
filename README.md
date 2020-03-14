@@ -125,7 +125,7 @@ images! Thus, we need to crop the images so that the boundaries are equal to the
     
 ![Automatically segmented pie mask, cropped.](resources/AutomaticMaskCropped.png)
 
-8. We now have all we need to simulate pi. There are two ways to do this in `pypiepi`. First, we'll calculate pie very
+8. We now have all we need to simulate pi. There are two ways to do this in `pypiepi`. First, we'll calculate pi very
 quickly using a vectorized method. This is straightforward:
 
 ```python
@@ -136,7 +136,7 @@ quickly using a vectorized method. This is straightforward:
 3.116325571153972
 ```
     
-The returned values will vary slightly each time, but should be close to these. Congrats! You've simulated pie on a
+The returned values will vary slightly each time, but should be close to these. Congrats! You've simulated pi on a
 pie in Python.
 
 9. Wasn't that a letdown? All that work for just a single number? Luckily `pypiepi` has a cooler way to simulate pi.
