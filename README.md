@@ -2,13 +2,13 @@
 
 For Kathy
 
-## Summary
+#### A library for everything you need to simulate pi on pictures of pies in Python.
 
-A library for everything you need to simulate pi on pictures of pies in Python.
+![Pi simulation on a pie.](resources/PaintAndSimulate.gif)
 
 ## Example
 
-#### The Long Version
+#### The Long Version (TL;DR below)
 
 For a perfect circle, we can simulate pi by plotting it within a square such that width = height = diameter, then
 counting  the ratio of points randomly distributed throughout the square that fall within/without the circle. This
