@@ -257,7 +257,7 @@ def segment_pie_manual(image):
         Binary segmentation of the circular object.
     """
     root_ps = tk.Tk()
-    root_ps.title('Painter the Pie')
+    root_ps.title('Paint the Pie')
     painter_app = PaintThePie(root_ps, image_path=image)
     root_ps.mainloop()
     return painter_app.mask[:, :, 0]
