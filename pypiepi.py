@@ -81,7 +81,7 @@ class SimulatePi:
         n_histories = 0
         hits = 0
         self.verbosity_print("History | Convergence | pi")
-        while convergence > self.convergence_criterion and n_histories < self.max_histories:
+        while convergence > self.convergence_criterion or n_histories < self.max_histories:
             dart_x = _np.random.randint(0, x_len)
             dart_y = _np.random.randint(0, y_len)
             if self.mask[dart_x, dart_y] == 1:
@@ -260,7 +260,7 @@ def segment_pie_manual(image):
     root_ps.title('Painter the Pie')
     painter_app = PaintThePie(root_ps, image_path=image)
     root_ps.mainloop()
-    return painter_app.mask
+    return painter_app.mask[:, :, 0]
 
 
 def measure_radius(image):
