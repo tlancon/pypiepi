@@ -8,7 +8,7 @@ For Kathy
 
 ## Example
 
-#### The Long Version (TL;DR below)
+#### The Long Version (TL;DR at bottom)
 
 For a perfect circle, we can simulate pi by plotting it within a square such that width = height = diameter, then
 counting  the ratio of points randomly distributed throughout the square that fall within/without the circle. This
