@@ -2,8 +2,7 @@ import tkinter as tk
 import numpy as np
 from PIL import ImageTk, Image
 from skimage.io import imread
-from skimage.segmentation import slic, mark_boundaries
-from skimage.morphology import flood_fill
+from skimage.segmentation import slic, mark_boundaries, flood_fill
 from skimage.util import img_as_ubyte
 
 
