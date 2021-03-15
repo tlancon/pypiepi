@@ -35,7 +35,7 @@ pip:
 ```python
 >>> import pypiepi as ppp
 >>> from skimage.io import imshow
->>> import matplotlib.pylot as plt
+>>> import matplotlib.pyplot as plt
 ```
 
 3. You'll need to use the path to the picture you want to work with quite a bit, so go ahead and save that to a
@@ -177,7 +177,7 @@ History | Convergence | pi
 3139 | 0.033940955839961706 | 3.175533609429755
 3140 | 0.03420352475415589 | 3.175796178343949
 3141 | 0.03446592648024849 | 3.1760585800700416
->>> imshow(sim.simulation_image)
+>>> imshow(automatic_sim.simulation_image)
 >>> plt.show()
 ```
     
