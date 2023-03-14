@@ -6,9 +6,9 @@ from skimage.io import imread as _imread
 from skimage.feature import canny as _canny
 from skimage.transform import hough_circle as _hough_circle
 from skimage.transform import hough_circle_peaks as _hough_circle_peaks
-from skimage.draw import circle as _circle
+from skimage.draw import circle_perimeter as _circle_perimeter
 from skimage.morphology import disk as _disk
-from skimage.morphology import watershed as _watershed
+from skimage.segmentation import watershed as _watershed
 from skimage.filters.rank import median as _median
 from skimage.filters.rank import gradient as _gradient
 from skimage.segmentation import join_segmentations as _join_segmentations
@@ -94,7 +94,7 @@ class SimulatePi:
             n_histories += 1
             self.convergence_history = _np.append(self.convergence_history, convergence)
             self.pi_history = _np.append(self.pi_history, self.simulated_pi)
-            self.verbosity_print(f"{n_histories} | {convergence} | {self.simulated_pi}")
+            self.verbosity_print(f"{n_histories} | {convergence:.11f} | {self.simulated_pi:.11f}")
 
     def verbosity_print(self, message):
         """
@@ -222,10 +222,10 @@ def segment_pie_auto(image, radius, radius_width, edge_size=3):
     # cx, cy, and r are returned as arrays, but circle_perimeter requires ints:
     cy, cx, r = map(int, [cy, cx, r])
 
-    rr, cc = _circle(cy, cx, r-int(radius_width/2), shape=input_image.shape)
+    rr, cc = _circle_perimeter(cy, cx, r-int(radius_width/2), shape=input_image.shape)
     inside_seed[rr, cc] = 1
 
-    rr, cc = _circle(cy, cx, r + int(radius_width / 2), shape=input_image.shape)
+    rr, cc = _circle_perimeter(cy, cx, r + int(radius_width / 2), shape=input_image.shape)
     outside_seed[rr, cc] = 1
     outside_seed = _np.logical_not(outside_seed)
 
